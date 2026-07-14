@@ -1,0 +1,8 @@
+# 1. Entra a la carpeta de tu backend
+cd backend-dental
+
+# 2. Activa tu entorno virtual
+source venv/Scripts/activate
+
+# 3. Ejecuta tu servidor
+uvicorn main:app --reload
