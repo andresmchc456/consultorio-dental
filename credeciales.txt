@@ -1,0 +1,15 @@
+Administrador
+
+Correo: admin@clinicadental.com
+Contraseña: 123456
+Rol: administrador
+Odontólogo
+
+Correo: odontologo@clinicadental.com
+Contraseña: 123456
+Rol: odontologo
+Paciente
+
+Correo: paciente@clinicadental.com
+Contraseña: 123456
+Rol: paciente
