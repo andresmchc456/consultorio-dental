@@ -1,1 +1,32 @@
-<p>login works!</p>
+<div class="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
+        <div class="text-center mb-8">
+            <span class="text-5xl">🦷</span>
+            <h2 class="mt-4 text-3xl font-bold text-slate-800">¡Bienvenido!</h2>
+            <p class="text-sm text-slate-500 mt-1">Ingresa a la plataforma del Consultorio Dental</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
+            <div *ngIf="errorMessage" class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium">
+                {{ errorMessage }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700">Correo Electrónico</label>
+                <input type="email" name="email" [(ngModel)]="email" required placeholder="doctor@consultorio.com"
+                    class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-dentalPrimary focus:border-transparent transition-all" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700">Contraseña</label>
+                <input type="password" name="pass" [(ngModel)]="pass" required placeholder="••••••••"
+                    class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-dentalPrimary focus:border-transparent transition-all" />
+            </div>
+
+            <button type="submit" [disabled]="!loginForm.form.valid"
+                class="w-full py-3 px-4 bg-dentalPrimary hover:bg-dentalSecondary text-black font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                Iniciar Sesión
+            </button>
+        </form>
+    </div>
+</div>
