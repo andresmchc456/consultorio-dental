@@ -38,8 +38,17 @@ export class AgendaService {
     // 1. Guardar registro histórico en Firestore
     await addDoc(citasRef, nuevaCita);
 
-    // 2. Notificar vía API de Python (FastAPI) de forma asíncrona
-    this.http.post(this.apiBackendUrl, nuevaCita).subscribe({
+    // 2. Adaptar el objeto al esquema esperado por FastAPI (nombre y telefono)
+    const payload = {
+      nombre: nuevaCita.nombre_paciente,
+      telefono: nuevaCita.telefono_paciente,
+      fecha: nuevaCita.fecha,
+      hora: nuevaCita.hora,
+      odontologo: nuevaCita.odontologo
+    };
+
+    // 3. Notificar vía API de Python (FastAPI) de forma asíncrona
+    this.http.post(this.apiBackendUrl, payload).subscribe({
       next: (res) => console.log('Notificación de WhatsApp enviada exitosamente:', res),
       error: (err) => console.error('Error al conectar con el backend de WhatsApp:', err)
     });

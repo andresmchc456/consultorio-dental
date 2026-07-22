@@ -1,1 +1,101 @@
-<p>dashboard works!</p>
+<div class="min-h-screen bg-slate-50">
+
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🦷</span>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 leading-tight">Consultorio Dental</h1>
+                    <p class="text-xs text-slate-500">Panel de Control Clínico</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-semibold text-slate-700 capitalize">{{ usuario?.nombre || 'Usuario' }}</p>
+                    <span class="text-xs bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-medium capitalize">
+                        {{ usuario?.rol || 'Personal' }}
+                    </span>
+                </div>
+                <button (click)="cerrarSesion()"
+                    class="px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition-all">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto p-6">
+
+        <!-- MENSJE DE BIENVENIDA -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-slate-800">¡Hola, {{ usuario?.nombre || 'Especialista' }}! 👋</h2>
+            <p class="text-sm text-slate-500">Selecciona uno de los módulos para gestionar la clínica hoy.</p>
+        </div>
+
+        <!-- TARJETAS DE MÓDULOS DEL SISTEMA -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- TARJETA 1: AGENDA MÉDICA (Principal) -->
+            <a routerLink="/agenda"
+                class="group bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-dentalPrimary transition-all duration-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 bg-teal-50 text-dentalPrimary rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        📅
+                    </div>
+                    <span class="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-md">Activo</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 group-hover:text-dentalPrimary transition-colors">
+                    Agenda Médica
+                </h3>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                    Agenda turnos, consulta la lista en tiempo real y dispara notificaciones automáticas por WhatsApp a
+                    tus pacientes.
+                </p>
+                <div class="mt-4 flex items-center text-xs font-semibold text-dentalPrimary">
+                    Acceder a la Agenda →
+                </div>
+            </a>
+
+            <!-- TARJETA 2: EXPEDIENTES / EVOLUCIÓN (Fase 5) -->
+            <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200 opacity-75">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-2xl">
+                        🧠
+                    </div>
+                    <span
+                        class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md">Próximamente</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-700">
+                    Análisis de Evolución (IA)
+                </h3>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                    Módulo con IA de Gemini para procesar la evolución clínica e historial de los tratamientos
+                    odontológicos.
+                </p>
+            </div>
+
+            <!-- TARJETA 3: ESTADÍSTICAS DEL SISTEMA -->
+            <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200 opacity-75">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl">
+                        📊
+                    </div>
+                    <span class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-1 rounded-md">Estadísticas</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-700">
+                    Reportes de Citas
+                </h3>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                    Consulta métricas de asistencia, citas agendadas durante el mes y volumen de mensajes enviados.
+                </p>
+            </div>
+
+        </div>
+    </main>
+</div>

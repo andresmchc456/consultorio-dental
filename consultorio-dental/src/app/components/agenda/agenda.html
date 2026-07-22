@@ -1,1 +1,109 @@
-<p>agenda works!</p>
+<div class="min-h-screen bg-slate-50 p-6">
+    <!-- Barra de Navegación Simple -->
+    <div
+        class="max-w-7xl mx-auto mb-8 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">📅</span>
+            <h1 class="text-xl font-bold text-slate-800">Módulo de Agenda Médica</h1>
+        </div>
+        <a routerLink="/dashboard" class="text-sm font-semibold text-dentalPrimary hover:text-dentalSecondary">← Volver
+            al Dashboard</a>
+    </div>
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- COLUMNA 1: FORMULARIO DE AGENDAMIENTO -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-100 h-fit">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>➕</span> Agendar Nueva Cita
+            </h2>
+
+            <div *ngIf="mensajeExito"
+                class="mb-4 bg-teal-50 text-teal-800 p-3 rounded-lg text-sm font-medium border border-teal-200">
+                ¡Cita guardada con éxito y notificación enviada a WhatsApp! 🚀
+            </div>
+
+            <form (ngSubmit)="onSubmit()" #citaForm="ngForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Nombre del
+                        Paciente</label>
+                    <input type="text" name="nombre" [(ngModel)]="nuevaCita.nombre_paciente" required
+                        placeholder="Ej. Carlos Pérez"
+                        class="mt-1 block w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-dentalPrimary focus:outline-none" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">WhatsApp (Con
+                        Código de País)</label>
+                    <input type="text" name="telefono" [(ngModel)]="nuevaCita.telefono_paciente" required
+                        placeholder="Ej. 3001234567"
+                        class="mt-1 block w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-dentalPrimary focus:outline-none" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Fecha</label>
+                        <input type="date" name="fecha" [(ngModel)]="nuevaCita.fecha" required
+                            class="mt-1 block w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-dentalPrimary focus:outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Hora</label>
+                        <input type="time" name="hora" [(ngModel)]="nuevaCita.hora" required
+                            class="mt-1 block w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-dentalPrimary focus:outline-none" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Odontólogo
+                        Asignado</label>
+                    <select name="odontologo" [(ngModel)]="nuevaCita.odontologo" required
+                        class="mt-1 block w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white border-slate-200 focus:ring-2 focus:ring-dentalPrimary focus:outline-none">
+                        <option value="" disabled selected>Seleccione un especialista</option>
+                        <option value="Dr. Andrés Cortés">Dr. Andrés Cortés</option>
+                        <option value="Dra. Diana Restrepo">Dra. Diana Restrepo</option>
+                    </select>
+                </div>
+
+                <button type="submit" [disabled]="!citaForm.form.valid || cargando"
+                    class="w-full py-2.5 px-4 bg-dentalPrimary hover:bg-dentalSecondary text-black font-semibold text-sm rounded-lg shadow transition-all disabled:opacity-50">
+                    {{ cargando ? 'Procesando e informando...' : 'Confirmar y Notificar' }}
+                </button>
+            </form>
+        </div>
+
+        <!-- COLUMNA 2 Y 3: LISTADO DE CITAS AGENDADAS -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>📋</span> Control de Turnos Activos
+            </h2>
+
+            <div *ngIf="citas.length === 0" class="text-center py-12 text-slate-400 text-sm">
+                No hay citas agendadas para el día de hoy.
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (cita of citas; track cita.id) {
+                <div
+                    class="p-4 border border-slate-100 bg-slate-50 rounded-xl hover:shadow-sm transition-all relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-dentalPrimary"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-slate-800 text-sm capitalize">{{ cita.nombre_paciente }}</h3>
+                        <span class="px-2 py-0.5 bg-teal-100 text-teal-800 rounded text-xs font-semibold">{{ cita.hora
+                            }}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 flex items-center gap-1 mb-1">
+                        <span>📅</span> {{ cita.fecha }}
+                    </p>
+                    <p class="text-xs text-slate-600 flex items-center gap-1">
+                        <span>👨‍⚕️</span> <span class="font-medium text-slate-700">{{ cita.odontologo }}</span>
+                    </p>
+                    <p class="text-[11px] text-slate-400 mt-2 italic flex items-center gap-0.5">
+                        <span>📱</span> {{ cita.telefono_paciente }}
+                    </p>
+                </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
