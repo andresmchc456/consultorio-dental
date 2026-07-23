@@ -38,7 +38,7 @@
                 </div>
 
                 <button (click)="procesarEvolucion()" [disabled]="cargando"
-                    class="w-full mt-4 py-3 px-4 bg-dentalPrimary hover:bg-dentalSecondary text-white font-semibold text-sm rounded-lg shadow transition-all disabled:opacity-50">
+                    class="w-full mt-4 py-3 px-4 bg-dentalPrimary hover:bg-dentalSecondary text-black font-semibold text-sm rounded-lg shadow transition-all disabled:opacity-50">
                     {{ cargando ? 'Subiendo imágenes y analizando con Gemini 2.5...' : 'Ejecutar Evaluación de IA' }}
                 </button>
             </div>
