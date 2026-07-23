@@ -2,12 +2,13 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login';
 import { DashboardComponent } from './components/dashboard/dashboard';
 import { AgendaComponent } from './components/agenda/agenda';
-import { HistoriaClinica } from './components/historia-clinica/historia-clinica';
+import { HistoriaClinicaComponent } from './components/historia-clinica/historia-clinica';
 import { roleGuard } from './guards/role-guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
+    { path: 'historia-clinica', component: HistoriaClinicaComponent },
 
     // Dashboard accesible por Administradores, Odontólogos y Pacientes
     {
@@ -26,7 +27,7 @@ export const routes: Routes = [
     // Las Historias Clínicas son exclusivas de los Odontólogos
     {
         path: 'historia-clinica',
-        component: HistoriaClinica,
+        component: HistoriaClinicaComponent,
         canActivate: [roleGuard(['odontologo'])]
     },
 

@@ -1,1 +1,95 @@
-<p>historia-clinica works!</p>
+<div class="min-h-screen bg-slate-50 p-6">
+    <!-- Encabezado -->
+    <div
+        class="max-w-6xl mx-auto mb-8 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🤖</span>
+            <h1 class="text-xl font-bold text-slate-800">Evaluación de Evolución Clínica con IA</h1>
+        </div>
+        <a routerLink="/dashboard" class="text-sm font-semibold text-dentalPrimary hover:text-dentalSecondary">← Volver
+            al Dashboard</a>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- PANEL DE CARGA DE IMÁGENES -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>📸</span> Seleccionar Fotografías del Tratamiento
+            </h2>
+
+            <div *ngIf="error" class="mb-4 bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium">
+                {{ error }}
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Foto Inicial
+                        (Semana 1 / Estado Anterior)</label>
+                    <input type="file" (change)="onFileSelected($event, 'anterior')" accept="image/*"
+                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-dentalPrimary hover:file:bg-teal-100 cursor-pointer" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Foto Actual
+                        (Evolución / Avance)</label>
+                    <input type="file" (change)="onFileSelected($event, 'nueva')" accept="image/*"
+                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-dentalPrimary hover:file:bg-teal-100 cursor-pointer" />
+                </div>
+
+                <button (click)="procesarEvolucion()" [disabled]="cargando"
+                    class="w-full mt-4 py-3 px-4 bg-dentalPrimary hover:bg-dentalSecondary text-white font-semibold text-sm rounded-lg shadow transition-all disabled:opacity-50">
+                    {{ cargando ? 'Subiendo imágenes y analizando con Gemini 2.5...' : 'Ejecutar Evaluación de IA' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- PANEL DE REPORTE ENTREGADO POR IA -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>📋</span> Reporte Clínico Sugerido por Gemini
+            </h2>
+
+            <div *ngIf="!resultadoIA && !cargando" class="text-center py-12 text-slate-400 text-sm">
+                Carga dos fotografías y ejecuta la evaluación para ver el informe médico aquí.
+            </div>
+
+            <div *ngIf="cargando" class="text-center py-12 text-teal-600 font-medium animate-pulse text-sm">
+                🧠 La IA está comparando la alineación, espacios y tejidos blandos...
+            </div>
+
+            <div *ngIf="resultadoIA" class="space-y-4">
+                <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                    <span class="text-xs font-bold text-teal-800 uppercase tracking-wider">Avance Estimado del
+                        Tratamiento</span>
+                    <div class="flex items-center gap-3 mt-1">
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div class="bg-dentalPrimary h-3 rounded-full transition-all duration-500"
+                                [style.width.%]="resultadoIA.porcentaje_avance_estimado || 50"></div>
+                        </div>
+                        <span class="text-sm font-bold text-dentalPrimary">{{ resultadoIA.porcentaje_avance_estimado
+                            }}%</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Cambios Observados</h4>
+                    <p class="text-sm text-slate-700 mt-1 leading-relaxed">{{ resultadoIA.cambios_observados }}</p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Alertas / Puntos Críticos</h4>
+                    <p class="text-sm text-slate-700 mt-1 leading-relaxed">{{ resultadoIA.alertas_o_puntos_criticos }}
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Recomendaciones sugeridas</h4>
+                    <p class="text-sm text-slate-700 mt-1 leading-relaxed">{{ resultadoIA.recomendaciones_clinicas }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
