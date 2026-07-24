@@ -4,11 +4,11 @@ import { DashboardComponent } from './components/dashboard/dashboard';
 import { AgendaComponent } from './components/agenda/agenda';
 import { HistoriaClinicaComponent } from './components/historia-clinica/historia-clinica';
 import { roleGuard } from './guards/role-guard';
+import { noAuthGuard } from './guards/no-auth-guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'historia-clinica', component: HistoriaClinicaComponent },
+    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
 
     // Dashboard accesible por Administradores, Odontólogos y Pacientes
     {
@@ -32,5 +32,5 @@ export const routes: Routes = [
     },
 
     // Comportamiento por defecto para rutas no existentes
-    { path: '**', redirectTo: 'login' }
+    { path: '**', redirectTo: 'dashboard' }
 ];
