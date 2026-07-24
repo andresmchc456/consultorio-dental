@@ -1,16 +1,29 @@
 import base64
 import os
+import sys
 from io import BytesIO
 
+# Asegurar que el directorio del proyecto esté en sys.path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
 from google import genai
 from google.genai import types
 from PIL import Image
 import requests
 from pydantic import BaseModel
 from twilio.rest import Client
+
+# Importar funciones personalizadas desde auth.py
+from auth import (
+    crear_token_acceso,
+    verificar_password,
+    obtener_password_hash,
+    obtener_usuario_actual
+)
 
 # 1. Cargar variables de entorno
 load_dotenv()
@@ -27,6 +40,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Base de datos simulada de usuarios (en producción esto irá a MySQL/PostgreSQL)
+# Credenciales de prueba: Usuario -> admin@dental.com | Password -> admin123
+USUARIOS_DB = {
+    "admin@dental.com": {
+        "username": "admin@dental.com",
+        "nombre": "Dr. Odontólogo",
+        "password_hash": obtener_password_hash("admin123"),
+        "rol": "odontologo"
+    }
+}
+
 # 3. Inicializar cliente de Gemini SDK oficial
 gemini_client = None
 try:
@@ -39,6 +63,11 @@ except Exception as e:
 
 
 # 4. Modelos de datos para las peticiones Pydantic
+class TokenRespuesta(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class CitaNotificacion(BaseModel):
     telefono: str  # Formato internacional, ej: "+573001234567"
     nombre: str
@@ -74,8 +103,35 @@ def home():
     return {"status": "online", "message": "API del Consultorio Dental lista"}
 
 
+# --- ENDPOINT DE AUTENTICACIÓN (LOGIN) ---
+@app.post("/api/v1/auth/login", response_model=TokenRespuesta)
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """
+    Endpoint para autenticación de usuarios.
+    Recibe username (correo) y password en formato Form Data.
+    Retorna el Token JWT.
+    """
+    usuario = USUARIOS_DB.get(form_data.username)
+
+    if not usuario or not verificar_password(form_data.password, usuario["password_hash"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Correo o contraseña incorrectos",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    token = crear_token_acceso(
+        data={"sub": usuario["username"], "rol": usuario["rol"]}
+    )
+
+    return {"access_token": token, "token_type": "bearer"}
+
+
+# --- ENDPOINT PROTEGIDO DE EVALUACIÓN DE IMÁGENES ---
 @app.post("/api/v1/analizar-progreso")
-def analizar_progreso(datos: AnalisisProgreso):
+def analizar_progreso(
+    datos: AnalisisProgreso,
+    usuario_autenticado: dict = Depends(obtener_usuario_actual)
+):
     if not os.getenv("GEMINI_API_KEY") or gemini_client is None:
         raise HTTPException(
             status_code=500,
@@ -105,7 +161,7 @@ def analizar_progreso(datos: AnalisisProgreso):
 
         # 3. Invocar a Gemini enviándole ambas imágenes y solicitando respuesta JSON nativa
         response = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             contents=[img_ant, img_nue, prompt],
             config=types.GenerateContentConfig(
                 response_mime_type="application/json"
@@ -131,6 +187,7 @@ def analizar_progreso(datos: AnalisisProgreso):
         )
 
 
+# --- ENDPOINT DE NOTIFICACIÓN WHATSAPP ---
 @app.post("/api/v1/notificar-cita")
 def notificar_cita(cita: CitaNotificacion):
     account_sid = os.getenv("TWILIO_ACCOUNT_SID")
