@@ -1,8 +1,9 @@
 import { Injectable, inject } from "@angular/core";
 import { Auth, signInWithEmailAndPassword, signOut, user } from '@angular/fire/auth';
-import { Firestore, doc, docData, } from "@angular/fire/firestore";
-import { Observable, of } from "rxjs";
-import { switchMap, take } from "rxjs/operators";
+import { Firestore, doc, docData, getDoc } from "@angular/fire/firestore";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, of, firstValueFrom } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 export interface UserProfile {
   uid: string;
@@ -15,8 +16,11 @@ export interface UserProfile {
   providedIn: 'root'
 })
 export class AuthService {
-  private auth = inject(Auth);
+  public auth = inject(Auth);
   private firestore = inject(Firestore);
+  private http = inject(HttpClient);
+
+  private backendLoginUrl = 'http://127.0.0.1:8000/api/v1/auth/login';
 
   //Observable que emite el estado del usuario de Auth
   user$ = user(this.auth);
@@ -33,15 +37,39 @@ export class AuthService {
   }
 
   // Iniciar sesión
-  login(email: string, pass: string) {
-    return signInWithEmailAndPassword(this.auth, email, pass);
+  async login(email: string, pass: string) {
+    const userCredential = await signInWithEmailAndPassword(this.auth, email, pass);
+    await this.obtenerYGuardarTokenBackend(email, pass);
+    return userCredential;
+  }
+
+  // Solicitar y guardar token JWT de FastAPI
+  async obtenerYGuardarTokenBackend(email: string = 'admin@dental.com', pass: string = 'admin123'): Promise<string | null> {
+    try {
+      const body = new URLSearchParams();
+      body.set('username', email);
+      body.set('password', pass);
+
+      const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+      const response = await firstValueFrom(
+        this.http.post<{ access_token: string }>(this.backendLoginUrl, body.toString(), { headers })
+      );
+
+      if (response && response.access_token) {
+        localStorage.setItem('access_token', response.access_token);
+        return response.access_token;
+      }
+    } catch (err) {
+      console.warn('Error al solicitar token de backend FastAPI:', err);
+    }
+    return null;
   }
 
   // Cerrar sesión
   logout() {
+    localStorage.removeItem('access_token');
     return signOut(this.auth);
   }
-
 
   // Método auxiliar rápido para verificar el rol actual del usuario logueado
   async getRolActua(): Promise<string | null> {
@@ -49,10 +77,16 @@ export class AuthService {
     if (!firebaseUser) return null;
 
     const userDocRef = doc(this.firestore, `usuarios/${firebaseUser.uid}`);
-    // Hacemos una lectura única
-    const profile = await docData(userDocRef).pipe(take(1)).toPromise() as UserProfile;
-    return profile ? profile.rol : null;
+    // Hacemos una lectura única usando getDoc (evita error de injection context de RxJS docData)
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      const profile = docSnap.data() as UserProfile;
+      return profile ? profile.rol : null;
+    }
+    return null;
   }
 
 }
+
+
 
