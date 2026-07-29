@@ -31,7 +31,14 @@ export const routes: Routes = [
         canActivate: [roleGuard(['odontologo'])]
     },
 
-    // reportes
+    // Análisis de Evolución (IA) accesible por Administradores y Odontólogos
+    {
+        path: 'evolucion',
+        loadComponent: () => import('./components/evolucion/evolucion.component').then(m => m.EvolucionComponent),
+        canActivate: [roleGuard(['administrador', 'odontologo'])]
+    },
+
+    // Reportes de citas accesibles por Administradores
     {
         path: 'reportes',
         loadComponent: () => import('./components/reportes/reportes.component').then(m => m.ReportesComponent)
