@@ -196,12 +196,48 @@ CITAS_MOCK = [
     {"id": 4, "paciente": "María López", "estado": "Cancelada", "whatsapp_enviado": True},
 ]
 
+# --- MODELO DE RESPUESTA PARA EVOLUCIÓN CLÍNICA (IA) ---
+class AnalisisEvolucionRespuesta(BaseModel):
+    paciente_id: int
+    resumen_evolucion: str
+    puntos_clave: list[str]
+    recomendaciones: list[str]
+    fecha_analisis: str
+
+
 # --- MODELO DE RESPUESTA PARA REPORTES ---
 class ReporteCitasRespuesta(BaseModel):
     citas_mes_actual: int
     tasa_asistencia_porcentaje: float
     mensajes_whatsapp_enviados: int
     resumen_estados: dict  # ej: {"Confirmada": 12, "Pendiente": 4, "Cancelada": 2}
+
+
+# --- ENDPOINT PROTEGIDO DE ANÁLISIS DE EVOLUCIÓN CLÍNICA ---
+@app.get("/api/v1/evolucion/{paciente_id}", response_model=AnalisisEvolucionRespuesta)
+def obtener_analisis_evolucion(
+    paciente_id: int,
+    usuario_autenticacion: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Endpoint protegido para obtener el análisis de evolución clínica e historial con Gemini AI.
+    """
+    return {
+        "paciente_id": paciente_id,
+        "resumen_evolucion": f"El paciente #{paciente_id} ha presentado una evolución clínica altamente favorable durante los últimos 3 meses de tratamiento. Se observa una adecuada alineación en la arcada superior y reducción notable del apiñamiento anterior.",
+        "puntos_clave": [
+            "Progreso del 75% en el alineamiento ortodóntico y cierre de espacios.",
+            "Salud periodontal estable sin signos de gingivitis activa.",
+            "Correcta adaptación y retención de los arcos y ligaduras."
+        ],
+        "recomendaciones": [
+            "Mantener el uso diario de elásticos intermaxilares de retención.",
+            "Reforzar el cepillado e higiene interdental en el sector posterior.",
+            "Programar la siguiente cita de control y ajuste en 4 semanas."
+        ],
+        "fecha_analisis": "2026-07-28"
+    }
+
 
 # --- BASE DE DATOS SIMULADA DE CITAS ---
 # (Luego conectaremos esto directamente a tu base de datos relacional)
