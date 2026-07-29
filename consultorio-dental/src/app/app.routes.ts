@@ -31,6 +31,14 @@ export const routes: Routes = [
         canActivate: [roleGuard(['odontologo'])]
     },
 
+    // reportes
+    {
+        path: 'reportes',
+        loadComponent: () => import('./components/reportes/reportes.component').then(m => m.ReportesComponent)
+    },
+
+
+
     // Comportamiento por defecto para rutas no existentes
     { path: '**', redirectTo: 'dashboard' }
 ];
