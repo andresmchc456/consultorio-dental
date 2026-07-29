@@ -79,22 +79,28 @@
                 </p>
             </div>
 
-            <!-- TARJETA 3: ESTADÍSTICAS DEL SISTEMA -->
-            <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200 opacity-75">
-                <div class="flex items-center justify-between mb-4">
-                    <div
-                        class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl">
-                        📊
+            <!-- TARJETA 3: ESTADÍSTICAS DEL SISTEMA (Reportes) -->
+            <a routerLink="/reportes"
+                class="group bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-indigo-500 transition-all duration-200 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div
+                            class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                            📊
+                        </div>
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Activo</span>
                     </div>
-                    <span class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-1 rounded-md">Estadísticas</span>
+                    <h3 class="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
+                        Reportes de Citas
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Consulta métricas de asistencia, citas agendadas durante el mes y volumen de mensajes enviados.
+                    </p>
                 </div>
-                <h3 class="text-lg font-bold text-slate-700">
-                    Reportes de Citas
-                </h3>
-                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                    Consulta métricas de asistencia, citas agendadas durante el mes y volumen de mensajes enviados.
-                </p>
-            </div>
+                <div class="mt-4 flex items-center text-xs font-semibold text-indigo-600">
+                    Ver Reportes →
+                </div>
+            </a>
 
             <!-- MÓDULO HISTORIA CLÍNICA E IA -->
             <div
