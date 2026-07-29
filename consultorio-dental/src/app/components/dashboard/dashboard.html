@@ -59,24 +59,29 @@
                     Acceder a la Agenda →
                 </div>
             </a>
-
-            <!-- TARJETA 2: EXPEDIENTES / EVOLUCIÓN (Fase 5) -->
-            <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200 opacity-75">
-                <div class="flex items-center justify-between mb-4">
-                    <div
-                        class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-2xl">
-                        🧠
+            <!-- Card: Análisis de Evolución (IA) -->
+            <div
+                class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center text-2xl">
+                            🧠
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">
+                            Activo
+                        </span>
                     </div>
-                    <span
-                        class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md">Próximamente</span>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Análisis de Evolución (IA)</h3>
+                    <p class="text-slate-500 text-sm mb-6">
+                        Módulo con IA de Gemini para procesar la evolución clínica e historial comparativo de los
+                        tratamientos odontológicos.
+                    </p>
                 </div>
-                <h3 class="text-lg font-bold text-slate-700">
-                    Análisis de Evolución (IA)
-                </h3>
-                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                    Módulo con IA de Gemini para procesar la evolución clínica e historial de los tratamientos
-                    odontológicos.
-                </p>
+
+                <button routerLink="/evolucion"
+                    class="w-full py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+                    Analizar Evolución →
+                </button>
             </div>
 
             <!-- TARJETA 3: ESTADÍSTICAS DEL SISTEMA (Reportes) -->
